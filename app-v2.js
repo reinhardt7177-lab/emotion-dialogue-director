@@ -163,7 +163,7 @@
       defender: ['옆에서 본 나는 어떻게 도울까요?', '직접 맞서지 않아도 괜찮아요. 친구의 마음과 안전을 지키는 방법을 살펴보세요.']
     }[module.id]
     return `<section class="task-panel">${taskHead(2, copy[0], copy[1])}
-      <div class="choice-grid">${choices.map(item => `<button data-action="choice" data-id="${item.id}" class="choice-card ${item.id} ${state.choice === item.id ? 'selected' : ''}"><span>${item.icon}</span><small>${item.title}</small><b>“${item.line}”</b><i>${state.choice === item.id ? '확인함' : '결과 보기'}</i></button>`).join('')}</div>
+      <div class="choice-grid">${choices.map((item, index) => `<button data-action="choice" data-id="${item.id}" class="choice-card ${state.choice === item.id ? 'selected' : ''}"><span>${index + 1}</span><small>선택 ${index + 1}</small><b>“${item.line}”</b><i>${state.choice === item.id ? '확인함' : '결과 보기'}</i></button>`).join('')}</div>
       ${state.choice ? `<div class="selected-note"><b>${choices.find(c => c.id === state.choice).icon} 선택 결과를 확인했어요. 다른 선택도 눌러 비교할 수 있어요.</b><button data-action="reopen-outcome">결과 다시 보기</button></div>` : ''}
       ${taskActions(Boolean(state.choice), '인물의 입장 살펴보기')}
     </section>`
