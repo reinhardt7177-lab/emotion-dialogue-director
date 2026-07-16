@@ -52,10 +52,10 @@ expectText('관계 신호 탐정', '첫 화면')
 expectText('마음과 안전 연습', '학생 전용 첫 화면')
 expectNoText('교사용', '학생 전용 첫 화면')
 expectText('assets/classroom-bg.webp', '로컬 배경 이미지 경로')
-global.window.location.hostname = 'emotion-dialogue-director.vercel.app'
+global.window.RELATIONSHIP_STUDIO_ASSETS = { 'assets/classroom-bg.webp': 'data:image/webp;base64,TEST' }
 click('home')
-expectText('https://raw.githubusercontent.com/reinhardt7177-lab/emotion-dialogue-director/main/assets/classroom-bg.webp', '배포 배경 이미지 경로')
-global.window.location.hostname = ''
+expectText('data:image/webp;base64,TEST', '내장 배경 이미지 경로')
+delete global.window.RELATIONSHIP_STUDIO_ASSETS
 click('home')
 click('open-module', 'signals')
 expectText('도움이 필요한 신호를 찾아요', '학습관')
@@ -122,6 +122,11 @@ for (const module of data.modules) {
       if (!fs.existsSync(absolute)) throw new Error(`누락된 이미지: ${asset}`)
     }
   }
+}
+const inlineSource = fs.readFileSync(path.join(root, 'assets-inline.js'), 'utf8')
+if (!inlineSource.includes('window.RELATIONSHIP_STUDIO_ASSETS')) throw new Error('내장 이미지 묶음이 없습니다.')
+for (const asset of fs.readdirSync(path.join(root, 'assets')).filter(name => name.endsWith('.webp'))) {
+  if (!inlineSource.includes(`assets/${asset}`)) throw new Error(`내장 이미지 누락: ${asset}`)
 }
 console.log(`PASS: 4개 학습관, ${scenarioCount}개 장면, 처음→팝업→결과 흐름 정상`)
 

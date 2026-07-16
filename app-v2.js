@@ -4,7 +4,6 @@
   const app = document.getElementById('app')
   const DATA = window.RELATIONSHIP_STUDIO_DATA
   const STORAGE_KEY = 'relationship-safety-studio-v2'
-  const REMOTE_ASSET_BASE = 'https://raw.githubusercontent.com/reinhardt7177-lab/emotion-dialogue-director/main/'
 
   const fresh = () => ({
     screen: 'home', moduleId: null, scenarioId: null, step: 1,
@@ -32,8 +31,8 @@
     return node.innerHTML
   }
   function assetUrl (path) {
-    const hostname = window.location && window.location.hostname ? window.location.hostname : ''
-    return hostname.endsWith('vercel.app') ? `${REMOTE_ASSET_BASE}${path}` : path
+    const inlineAssets = window.RELATIONSHIP_STUDIO_ASSETS || {}
+    return inlineAssets[path] || path
   }
   function choiceObjects (items) {
     return items.map(([id, icon, title, line, outcome]) => ({ id, icon, title, line, outcome, best: id === 'safe' }))
