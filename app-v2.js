@@ -67,7 +67,7 @@
         <section class="learning-path">
           <div><span>1</span><b>장면을 봐요</b><small>표정과 상황 관찰</small></div><i>→</i>
           <div><span>2</span><b>마음을 찾아요</b><small>감정·몸·관계 신호</small></div><i>→</i>
-          <div><span>3</span><b>결말을 비교해요</b><small>선택의 영향 확인</small></div><i>→</i>
+          <div><span>3</span><b>선택 결과를 봐요</b><small>말과 행동의 영향 확인</small></div><i>→</i>
           <div><span>4</span><b>안전을 연습해요</b><small>존중·도움 행동</small></div>
         </section>
       </section>
@@ -142,17 +142,29 @@
     return `<div class="task-actions"><button class="back-button" data-action="step-back">← 이전</button><button class="next-button" data-action="${last ? 'finish' : 'step-next'}" ${canNext ? '' : 'disabled'}>${nextLabel} <b>→</b></button></div>`
   }
   function emotionStep (module, scenario) {
+    const nextLabels = {
+      dialogue: '말과 표현 살펴보기',
+      pause: '다음 행동 살펴보기',
+      signals: '대처 방법 살펴보기',
+      defender: '도움 방법 살펴보기'
+    }
     return `<section class="task-panel">${taskHead(1, module.id === 'pause' ? '몸과 마음이 보내는 신호를 찾아요' : '이 장면에서 보이는 마음과 신호를 찾아요', '정답은 하나가 아니에요. 장면에서 근거를 찾으며 두 개 이상 골라 보세요.', `<b class="count">${state.emotions.length}/2+</b>`)}
       <div class="emotion-grid">${scenario.emotions.map((item, i) => `<button data-action="emotion" data-id="${esc(item)}" class="${state.emotions.includes(item) ? 'selected' : ''}"><span>${['💛','💭','👀','🫶','🧭','💡'][i]}</span><b>${item}</b><i>${state.emotions.includes(item) ? '✓' : '+'}</i></button>`).join('')}</div>
       <div class="learning-tip"><span>🎯</span><p><b>관찰 힌트</b> 인물의 표정뿐 아니라 반복 여부, 주변 친구, 말 뒤에 숨은 바람도 함께 살펴보세요.</p></div>
-      ${taskActions(state.emotions.length >= 2, '선택의 결말 비교하기')}
+      ${taskActions(state.emotions.length >= 2, nextLabels[module.id])}
     </section>`
   }
   function choiceStep (module, scenario) {
     const choices = choiceObjects(scenario.choices)
-    return `<section class="task-panel">${taskHead(2, '세 가지 선택의 결말을 비교해요', '어떤 행동이 나와 친구의 마음, 관계, 안전에 어떤 영향을 주는지 살펴보세요.')}
-      <div class="choice-grid">${choices.map(item => `<button data-action="choice" data-id="${item.id}" class="choice-card ${item.id} ${state.choice === item.id ? 'selected' : ''}"><span>${item.icon}</span><small>${item.title}</small><b>“${item.line}”</b><p>${item.outcome}</p><i>${state.choice === item.id ? '선택됨' : '결말 보기'}</i></button>`).join('')}</div>
-      ${state.choice ? `<div class="selected-note"><b>${choices.find(c => c.id === state.choice).icon} 선택한 결말을 확인했어요.</b><button data-action="reopen-outcome">팝업 다시 보기</button></div>` : ''}
+    const copy = {
+      dialogue: ['어떤 말로 표현할까요?', '말투와 표현을 고른 뒤, 친구의 마음과 관계가 어떻게 달라지는지 살펴보세요.'],
+      pause: ['화가 커질 때 어떻게 행동할까요?', '몸과 말이 다치지 않도록 잠깐 멈춘 뒤 선택할 행동을 살펴보세요.'],
+      signals: ['이 관계 신호에 어떻게 대처할까요?', '혼자 참거나 맞서기보다 안전과 도움을 연결하는 방법을 살펴보세요.'],
+      defender: ['옆에서 본 나는 어떻게 도울까요?', '직접 맞서지 않아도 괜찮아요. 친구의 마음과 안전을 지키는 방법을 살펴보세요.']
+    }[module.id]
+    return `<section class="task-panel">${taskHead(2, copy[0], copy[1])}
+      <div class="choice-grid">${choices.map(item => `<button data-action="choice" data-id="${item.id}" class="choice-card ${item.id} ${state.choice === item.id ? 'selected' : ''}"><span>${item.icon}</span><small>${item.title}</small><b>“${item.line}”</b><i>${state.choice === item.id ? '확인함' : '결과 보기'}</i></button>`).join('')}</div>
+      ${state.choice ? `<div class="selected-note"><b>${choices.find(c => c.id === state.choice).icon} 선택 결과를 확인했어요. 다른 선택도 눌러 비교할 수 있어요.</b><button data-action="reopen-outcome">결과 다시 보기</button></div>` : ''}
       ${taskActions(Boolean(state.choice), '인물의 입장 살펴보기')}
     </section>`
   }
@@ -194,11 +206,11 @@
     const image = item.best ? scenario.after : scenario.before
     const memoryTags = item.best ? ['잠깐 멈춤', '마음 존중', '도움 연결'] : ['결과 살피기', '마음 확인', '다시 선택']
     const memoryLine = item.best ? scenario.safeLine : '잠깐 멈추고, 이 선택 뒤에 남는 마음과 문제를 다시 살펴봐요.'
-    return `<div class="modal-backdrop" data-action="close-outcome" role="presentation"><section class="outcome-modal ${item.id}" role="dialog" aria-modal="true" aria-label="선택한 결말"><button class="modal-x" data-action="close-outcome" aria-label="닫기">×</button>
-      <div class="outcome-art"><img src="${image}" alt="${esc(item.title)}의 결과 장면"><span>${item.best ? 'SAFE ENDING' : 'ANOTHER ENDING'}</span><b>표정 · 몸의 거리 · 주변 도움을 그림에서 찾아보세요</b></div>
+    return `<div class="modal-backdrop" data-action="close-outcome" role="presentation"><section class="outcome-modal ${item.id}" role="dialog" aria-modal="true" aria-label="선택 결과"><button class="modal-x" data-action="close-outcome" aria-label="닫기">×</button>
+      <div class="outcome-art"><img src="${image}" alt="${esc(item.title)}의 결과 장면"><span>${item.best ? '안전한 결과' : '다시 생각할 결과'}</span><b>표정 · 몸의 거리 · 주변 도움을 그림에서 찾아보세요</b></div>
       <div class="outcome-copy"><small>${item.icon} ${item.title}</small><h2>${item.outcome}</h2><p>${item.best ? '마음을 존중하면서 안전한 도움과 해결의 길을 열었어요.' : '이 선택 뒤에는 어떤 마음과 문제가 남는지 살펴보세요. 다시 선택해도 괜찮아요.'}</p>
         <div class="memory-block"><small>🧠 머리에 쏙! 기억 문장</small><strong>“${memoryLine}”</strong><div>${memoryTags.map(tag => `<span>${tag}</span>`).join('')}</div></div>
-        <button data-action="close-outcome">장면으로 돌아가기</button></div>
+        <button data-action="close-outcome">다른 선택도 살펴보기</button></div>
     </section></div>`
   }
 
@@ -233,7 +245,7 @@
     </section></div>`
   }
   function lessonFlow () {
-    return `<div class="lesson-flow"><article><b>5분</b><span>장면 예상</span><small>표정·상황 관찰</small></article><article><b>10분</b><span>신호 찾기</span><small>개인 선택 후 짝 대화</small></article><article><b>15분</b><span>결말 비교</span><small>선택 근거 말하기</small></article><article><b>7분</b><span>대사 연습</span><small>안전한 문장 바꾸기</small></article><article><b>3분</b><span>생활 연결</span><small>도움 받을 어른 떠올리기</small></article></div>`
+    return `<div class="lesson-flow"><article><b>5분</b><span>장면 예상</span><small>표정·상황 관찰</small></article><article><b>10분</b><span>신호 찾기</span><small>개인 선택 후 짝 대화</small></article><article><b>15분</b><span>결과 비교</span><small>선택의 영향 말하기</small></article><article><b>7분</b><span>대사 연습</span><small>안전한 문장 바꾸기</small></article><article><b>3분</b><span>생활 연결</span><small>도움 받을 어른 떠올리기</small></article></div>`
   }
 
   function render () {

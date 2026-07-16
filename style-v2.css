@@ -169,11 +169,10 @@ img { display: block; max-width: 100%; }
 .next-button { min-width: 240px; padding: 0 19px; border: 0; color: white; background: var(--module); box-shadow: 4px 5px 0 color-mix(in srgb, var(--module) 25%, #c7d5d1); }
 .next-button:disabled { color: #9fa9a7; background: #dfe3e2; box-shadow: 4px 5px 0 #c9cecc; cursor: not-allowed; }
 .choice-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-.choice-card { position: relative; min-height: 215px; padding: 17px; border: 2px solid #dce4e1; border-radius: 18px; background: #fbfcfb; text-align: left; cursor: pointer; }
+.choice-card { position: relative; min-height: 185px; padding: 17px; border: 2px solid #dce4e1; border-radius: 18px; background: #fbfcfb; text-align: left; cursor: pointer; }
 .choice-card > span { display: grid; place-items: center; width: 45px; height: 45px; border-radius: 13px; background: #eef2f0; font-size: 25px; }
 .choice-card small { display: block; margin-top: 12px; color: var(--muted); font-weight: 800; }
 .choice-card > b { display: block; margin: 5px 0 7px; font-family: 'Gowun Dodum', 'Noto Sans KR', sans-serif; font-size: 16px; font-weight: 700; line-height: 1.65; }
-.choice-card p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.65; }
 .choice-card > i { position: absolute; right: 11px; top: 11px; padding: 5px 7px; border-radius: 999px; color: #61736f; background: #edf1ef; font-size: 10px; font-style: normal; font-weight: 800; }
 .choice-card.selected { border-color: var(--module); box-shadow: 0 0 0 3px var(--pale); }
 .choice-card.safe { background: color-mix(in srgb, var(--pale) 70%, white); }

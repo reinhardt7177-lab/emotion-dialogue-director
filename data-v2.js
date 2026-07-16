@@ -6,7 +6,7 @@ window.RELATIONSHIP_STUDIO_DATA = {
       icon: '🎬',
       eyebrow: '말의 힘을 연출해요',
       title: '감정 대화 감독관',
-      short: '말투와 표현을 바꾸고 서로 다른 결말을 비교해요.',
+      short: '말과 표현을 고르고, 선택 뒤에 달라지는 관계를 살펴봐요.',
       color: '#e76552',
       pale: '#fff0eb',
       competencies: ['공감', '의사소통', '갈등해결'],
@@ -117,3 +117,4 @@ window.RELATIONSHIP_STUDIO_DATA = {
     }
   ]
 }
+

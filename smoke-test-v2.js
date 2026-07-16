@@ -43,6 +43,10 @@ function expectText (text, stage) {
   if (!appHtml.includes(text)) throw new Error(`${stage}: 화면에서 '${text}'을 찾지 못했습니다.`)
 }
 
+function expectNoText (text, stage) {
+  if (appHtml.includes(text)) throw new Error(`${stage}: 화면에 아직 나오면 안 되는 '${text}'이 표시됐습니다.`)
+}
+
 expectText('어울림 관계안전 스튜디오', '첫 화면')
 expectText('관계 신호 탐정', '첫 화면')
 click('open-module', 'signals')
@@ -51,10 +55,12 @@ click('scenario', 'repeat-tease')
 expectText('그림을 계속 놀려요', '장면 시작')
 click('emotion', '반복됨')
 click('emotion', '여럿이 한 명을 향함')
+expectText('대처 방법 살펴보기', '감정 선택 단계')
+expectNoText('결말', '감정 선택 단계')
 click('step-next')
-expectText('세 가지 선택의 결말을 비교해요', '2단계')
+expectText('이 관계 신호에 어떻게 대처할까요?', '2단계')
 click('choice', 'safe')
-expectText('SAFE ENDING', '결말 팝업')
+expectText('안전한 결과', '선택 결과 팝업')
 click('close-outcome')
 click('step-next')
 click('insight', 'empathy')
@@ -92,3 +98,4 @@ for (const module of data.modules) {
   }
 }
 console.log(`PASS: 4개 학습관, ${scenarioCount}개 장면, 처음→팝업→결과 흐름 정상`)
+
