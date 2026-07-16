@@ -170,20 +170,22 @@
   }
   function insightStep (module, scenario) {
     const insights = simpleObjects(scenario.insights)
+    const selected = insights.find(item => item.id === state.insight)
     return `<section class="task-panel">${taskHead(3, module.id === 'defender' ? '옆 친구가 할 수 있는 일을 생각해요' : '행동 뒤의 마음과 위험을 살펴요', '겉으로 보이는 행동만 단정하지 않고, 안전에 도움이 되는 생각을 골라 보세요.')}
       <div class="insight-scene"><span>${module.icon}</span><div><small>감독관의 관찰</small><b>${scenario.lesson}</b></div></div>
-      <div class="insight-list">${insights.map(item => `<button data-action="insight" data-id="${item.id}" class="${state.insight === item.id ? 'selected' : ''} ${item.best ? 'best' : ''}"><span>${item.best ? '💡' : '💭'}</span><b>${item.text}</b><i>${state.insight === item.id ? '✓' : ''}</i></button>`).join('')}</div>
-      ${state.insight && state.insight !== 'empathy' ? '<p class="try-note">다른 사람의 마음과 안전까지 함께 살피는 생각도 찾아보세요.</p>' : ''}
-      ${taskActions(Boolean(state.insight), '안전한 다음 행동 만들기')}
+      <div class="insight-list">${insights.map((item, index) => `<button data-action="insight" data-id="${item.id}" class="${state.insight === item.id ? 'selected' : ''}"><span>${index + 1}</span><b>${item.text}</b><i>${state.insight === item.id ? '선택됨' : '선택'}</i></button>`).join('')}</div>
+      ${selected && !selected.best ? '<p class="try-note">이 생각만으로는 마음과 안전을 충분히 살피기 어려워요. 다른 생각을 한 번 더 찾아보세요.</p>' : ''}
+      ${selected && selected.best ? '<p class="try-note success">좋아요! 행동만 단정하지 않고 다른 사람의 마음과 안전까지 함께 살폈어요.</p>' : ''}
+      ${taskActions(Boolean(selected && selected.best), '안전한 다음 행동 만들기')}
     </section>`
   }
   function actionStep (module, scenario) {
     const actions = simpleObjects(scenario.actions)
     const selected = actions.find(item => item.id === state.action)
     return `<section class="task-panel">${taskHead(4, '나와 친구를 지키는 다음 행동을 골라요', '화해를 강요하거나 혼자 참지 않아요. 가장 안전하고 존중하는 행동을 찾아보세요.')}
-      <div class="action-list">${actions.map((item, index) => `<button data-action="action" data-id="${item.id}" class="${state.action === item.id ? 'selected' : ''} ${item.best ? 'best' : ''}"><span>${['🔥','☁️','🛟'][index]}</span><div><small>${['맞대응','참거나 피하기','안전한 선택'][index]}</small><b>${item.text}</b></div><i>${state.action === item.id ? '✓' : '선택'}</i></button>`).join('')}</div>
-      <div class="safe-line"><span>${module.icon}</span><div><small>연습할 한마디</small><b>“${scenario.safeLine}”</b></div></div>
+      <div class="action-list">${actions.map((item, index) => `<button data-action="action" data-id="${item.id}" class="${state.action === item.id ? 'selected' : ''}"><span>${index + 1}</span><div><small>행동 ${index + 1}</small><b>${item.text}</b></div><i>${state.action === item.id ? '선택됨' : '선택'}</i></button>`).join('')}</div>
       ${selected && !selected.best ? '<p class="try-note danger">이 행동은 마음이나 안전을 더 다치게 할 수 있어요. 도움을 연결하는 선택을 다시 찾아보세요.</p>' : ''}
+      ${selected && selected.best ? `<div class="safe-line"><span>${module.icon}</span><div><small>이제 연습할 한마디</small><b>“${scenario.safeLine}”</b></div></div>` : ''}
       ${taskActions(Boolean(selected && selected.best), '나의 관계안전 장면 완성', true)}
     </section>`
   }

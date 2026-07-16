@@ -185,13 +185,14 @@ img { display: block; max-width: 100%; }
 .insight-scene b { font-size: 16px; line-height: 1.65; }
 .insight-list, .action-list { display: grid; gap: 10px; }
 .insight-list button, .action-list button { display: grid; grid-template-columns: 47px 1fr auto; align-items: center; gap: 12px; min-height: 67px; padding: 10px 13px; border: 2px solid #dae4e1; border-radius: 15px; background: white; text-align: left; cursor: pointer; }
-.insight-list button > span, .action-list button > span { display: grid; place-items: center; width: 47px; height: 47px; border-radius: 13px; background: #f0f3f1; font-size: 23px; }
+.insight-list button > span, .action-list button > span { display: grid; place-items: center; width: 47px; height: 47px; border: 2px solid #d6e1de; border-radius: 13px; background: #f2f5f3; font-size: 17px; font-weight: 800; }
 .insight-list button > b, .action-list button b { font-size: 16px; line-height: 1.6; }
 .insight-list button > i, .action-list button > i { color: var(--module); font-style: normal; font-weight: 800; }
 .insight-list button.selected, .action-list button.selected { border-color: var(--module); background: var(--pale); }
 .action-list small { display: block; margin-bottom: 2px; color: var(--muted); font-size: 11px; font-weight: 800; }
 .try-note { margin: 12px 0 0; padding: 10px 13px; border-radius: 11px; color: #7c661c; background: #fff6cf; font-size: 12px; font-weight: 700; }
 .try-note.danger { color: #914439; background: #fff0ed; }
+.try-note.success { color: #246051; background: #e9f8f3; }
 .safe-line { display: flex; align-items: center; gap: 14px; margin-top: 16px; padding: 17px; border: 2px solid var(--module); border-radius: 17px; background: var(--pale); }
 .safe-line > span { font-size: 36px; }
 .safe-line small { display: block; color: var(--module); font-weight: 800; }
