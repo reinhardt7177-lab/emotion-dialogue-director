@@ -58,9 +58,6 @@ img { display: block; max-width: 100%; }
 .section-heading > div:first-child > span { color: var(--teal); font-size: 12px; font-weight: 800; letter-spacing: 1.3px; }
 .section-heading h2 { margin: 7px 0 5px; font-family: 'Jua', sans-serif; font-size: 36px; font-weight: 400; }
 .section-heading p { margin: 0; color: var(--muted); font-size: 16px; }
-.grade-filter { display: flex; gap: 6px; padding: 5px; border: 1px solid var(--line); border-radius: 14px; background: white; }
-.grade-filter button { border: 0; border-radius: 10px; padding: 10px 15px; background: transparent; color: #6a7d79; cursor: pointer; font-weight: 700; }
-.grade-filter button.active { color: white; background: var(--ink); }
 
 .module-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 22px; }
 .module-card { overflow: hidden; border: 2px solid #d8e2de; border-radius: 26px; background: white; box-shadow: 0 10px 25px rgba(28,71,72,.06); transition: transform .2s, box-shadow .2s, border-color .2s; }
@@ -314,7 +311,6 @@ img { display: block; max-width: 100%; }
   .passport-mini { left: 16px; right: auto; bottom: 25px; width: calc(100% - 32px); }
   .home-content, .scenario-section { width: calc(100% - 28px); padding: 45px 0; }
   .section-heading { display: block; }
-  .grade-filter { margin-top: 18px; width: fit-content; }
   .module-grid, .scenario-grid { grid-template-columns: 1fr; }
   .learning-path { align-items: stretch; flex-direction: column; }
   .learning-path > i { display: none; }
@@ -367,3 +363,4 @@ img { display: block; max-width: 100%; }
   body, .result-shell { background: white; }
   .result-paper { width: 100%; margin: 0; padding: 18px; border: 0; box-shadow: none; }
 }
+

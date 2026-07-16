@@ -6,7 +6,7 @@
   const STORAGE_KEY = 'relationship-safety-studio-v2'
 
   const fresh = () => ({
-    screen: 'home', grade: 'all', moduleId: null, scenarioId: null, step: 1,
+    screen: 'home', moduleId: null, scenarioId: null, step: 1,
     emotions: [], choice: null, insight: null, action: null,
     outcomeOpen: false, teacherId: null, completed: []
   })
@@ -62,11 +62,7 @@
       </section>
 
       <section class="home-content">
-        <div class="section-heading"><div><span>4개의 학습관</span><h2>오늘 연습할 힘을 골라요</h2><p>각 학습관은 같은 조작법으로 진행되어 내용에 더 집중할 수 있어요.</p></div>
-          <div class="grade-filter" aria-label="학년군 선택">
-            ${[['all','전체'],['3~4','3~4학년'],['5~6','5~6학년']].map(([id,label]) => `<button data-action="grade" data-id="${id}" class="${state.grade === id ? 'active' : ''}">${label}</button>`).join('')}
-          </div>
-        </div>
+        <div class="section-heading"><div><span>4개의 학습관</span><h2>오늘 연습할 힘을 골라요</h2><p>모든 장면을 자유롭게 선택하고, 카드의 추천 학년 표시는 참고로 활용해요.</p></div></div>
         <div class="module-grid">${DATA.modules.map(moduleCard).join('')}</div>
         <section class="learning-path">
           <div><span>1</span><b>장면을 봐요</b><small>표정과 상황 관찰</small></div><i>→</i>
@@ -81,14 +77,13 @@
   }
 
   function moduleCard (module) {
-    const visible = state.grade === 'all' ? module.scenarios : module.scenarios.filter(s => s.grade === state.grade)
     const completed = module.scenarios.filter(s => state.completed.includes(`${module.id}:${s.id}`)).length
     const thumbs = module.scenarios.slice(0, 3).map((s, index) => `<img src="${s.before}" alt="" style="--n:${index}">`).join('')
     return `<article class="module-card" style="--module:${module.color};--pale:${module.pale}">
       <div class="module-mosaic">${thumbs}<span>${module.order}관</span></div>
       <div class="module-card-body"><div class="module-icon">${module.icon}</div><span>${module.eyebrow}</span><h3>${module.title}</h3><p>${module.short}</p>
         <div class="competency-chips">${module.competencies.map(c => `<small>${c}</small>`).join('')}</div>
-        <div class="module-meta"><b>${visible.length}<small>개 장면</small></b><span>완료 ${completed}/${module.scenarios.length}</span></div>
+        <div class="module-meta"><b>${module.scenarios.length}<small>개 장면</small></b><span>완료 ${completed}/${module.scenarios.length}</span></div>
         <div class="module-buttons"><button data-action="open-module" data-id="${module.id}">학습관 들어가기 <b>→</b></button><button class="teacher-small" data-action="teacher" data-id="${module.id}" aria-label="${module.title} 교사용 안내">수업안</button></div>
       </div>
     </article>`
@@ -96,12 +91,11 @@
 
   function moduleLobby () {
     const module = getModule()
-    const scenarios = state.grade === 'all' ? module.scenarios : module.scenarios.filter(s => s.grade === state.grade)
     return `<main class="lobby-shell" style="--module:${module.color};--pale:${module.pale}">
       <header class="topbar">${logo(true)}<div><button class="top-ghost" data-action="teacher" data-id="${module.id}">교사용 수업안</button><button class="top-home" data-action="home">전체 학습관</button></div></header>
       <section class="lobby-hero"><span class="big-icon">${module.icon}</span><div><small>${module.order}관 · ${module.eyebrow}</small><h1>${module.title}</h1><p>${module.short}</p><div class="competency-chips large">${module.competencies.map(c => `<span>${c}</span>`).join('')}</div></div></section>
       <section class="scenario-section"><div class="section-heading"><div><span>SCENE SELECT</span><h2>연습할 장면을 골라요</h2><p>실제 경험을 말하지 않아도 괜찮아요. 이야기 속 인물의 선택을 함께 살펴봅니다.</p></div><button class="back-link" data-action="home">← 다른 학습관 보기</button></div>
-        <div class="scenario-grid">${scenarios.map(s => scenarioCard(module, s)).join('')}</div>
+        <div class="scenario-grid">${module.scenarios.map(s => scenarioCard(module, s)).join('')}</div>
       </section>
       <footer class="site-footer compact-footer"><p><b>안전 원칙</b> 위험하거나 반복되는 상황에서는 직접 맞서기보다 안전한 곳과 믿을 수 있는 어른을 찾아요.</p>${credit()}</footer>
       ${teacherModal()}
@@ -111,7 +105,7 @@
   function scenarioCard (module, scenario) {
     const done = state.completed.includes(`${module.id}:${scenario.id}`)
     return `<button class="scenario-card" data-action="scenario" data-id="${scenario.id}">
-      <span class="scenario-image"><img src="${scenario.before}" alt="${esc(scenario.title)} 장면"><em>${scenario.grade}학년</em>${done ? '<i>✓ 완료</i>' : ''}</span>
+      <span class="scenario-image"><img src="${scenario.before}" alt="${esc(scenario.title)} 장면"><em>${scenario.grade}학년 추천</em>${done ? '<i>✓ 완료</i>' : ''}</span>
       <span class="scenario-copy"><small>${scenario.place}</small><b>${scenario.icon} ${scenario.title}</b><p>${scenario.summary}</p><strong>${done ? '다시 연습하기' : '장면 시작하기'} →</strong></span>
     </button>`
   }
@@ -252,7 +246,6 @@
     if (!target) return
     const action = target.dataset.action; const id = target.dataset.id
     if (action === 'home') return set({ screen:'home', moduleId:null, scenarioId:null, step:1, outcomeOpen:false, teacherId:null })
-    if (action === 'grade') return set({ grade:id })
     if (action === 'open-module') return set({ screen:'module', moduleId:id, scenarioId:null, teacherId:null })
     if (action === 'scenario') return set({ screen:'practice', scenarioId:id, step:1, emotions:[], choice:null, insight:null, action:null, outcomeOpen:false })
     if (action === 'back-module') return set({ screen:'module', step:1, outcomeOpen:false, teacherId:null })
@@ -290,3 +283,4 @@
 
   render()
 })()
+
