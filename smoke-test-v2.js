@@ -123,7 +123,7 @@ for (const module of data.modules) {
     }
   }
 }
-const inlineSource = fs.readFileSync(path.join(root, 'assets-inline.js'), 'utf8')
+const inlineSource = ['assets-inline-a.js', 'assets-inline-b.js'].map(name => fs.readFileSync(path.join(root, name), 'utf8')).join('\n')
 if (!inlineSource.includes('window.RELATIONSHIP_STUDIO_ASSETS')) throw new Error('내장 이미지 묶음이 없습니다.')
 for (const asset of fs.readdirSync(path.join(root, 'assets')).filter(name => name.endsWith('.webp'))) {
   if (!inlineSource.includes(`assets/${asset}`)) throw new Error(`내장 이미지 누락: ${asset}`)
