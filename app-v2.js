@@ -8,7 +8,7 @@
   const fresh = () => ({
     screen: 'home', moduleId: null, scenarioId: null, step: 1,
     emotions: [], choice: null, insight: null, action: null,
-    outcomeOpen: false, teacherId: null, completed: []
+    outcomeOpen: false, completed: []
   })
 
   let state = load()
@@ -51,9 +51,9 @@
     return `<main class="home-shell">
       <section class="home-hero">
         <div class="hero-shade"></div>
-        <header>${logo()}<div class="hero-actions"><span class="target-chip">국어·인성·학교폭력 예방 · 초등 3~6학년</span><button class="ghost-light" data-action="teacher" data-id="overview">교사용 수업안</button></div></header>
+        <header>${logo()}<div class="hero-actions"><span class="target-chip">초등 3~6학년 · 마음과 안전 연습</span></div></header>
         <div class="hero-copy">
-          <span class="take-chip">EOULLIM DIRECTOR'S LAB</span>
+          <span class="take-chip">관계안전 장면 연습소</span>
           <h1>마음을 읽고, 관계를 바꾸고,<br><em>안전을 선택하는 감독관</em>이 되어 보세요.</h1>
           <p>갈등을 무조건 참거나 혼자 해결하는 연습이 아니에요. 감정을 알아차리고, 위험 신호를 구별하고, 필요할 때 함께 도움을 요청하는 힘을 길러요.</p>
           <div class="value-row"><span>💛 공감</span><span>👂 의사소통</span><span>🛟 감정조절</span><span>🔎 인식·대처</span><span>🦸 방어 행동</span></div>
@@ -72,7 +72,6 @@
         </section>
       </section>
       <footer class="site-footer"><p><b>기억해요.</b> 멈춰 달라고 했는데 계속되거나 무서운 상황은 혼자 해결하지 않아도 돼요.</p>${credit()}</footer>
-      ${teacherModal()}
     </main>`
   }
 
@@ -84,7 +83,7 @@
       <div class="module-card-body"><div class="module-icon">${module.icon}</div><span>${module.eyebrow}</span><h3>${module.title}</h3><p>${module.short}</p>
         <div class="competency-chips">${module.competencies.map(c => `<small>${c}</small>`).join('')}</div>
         <div class="module-meta"><b>${module.scenarios.length}<small>개 장면</small></b><span>완료 ${completed}/${module.scenarios.length}</span></div>
-        <div class="module-buttons"><button data-action="open-module" data-id="${module.id}">학습관 들어가기 <b>→</b></button><button class="teacher-small" data-action="teacher" data-id="${module.id}" aria-label="${module.title} 교사용 안내">수업안</button></div>
+        <div class="module-buttons"><button data-action="open-module" data-id="${module.id}">학습관 들어가기 <b>→</b></button></div>
       </div>
     </article>`
   }
@@ -92,13 +91,12 @@
   function moduleLobby () {
     const module = getModule()
     return `<main class="lobby-shell" style="--module:${module.color};--pale:${module.pale}">
-      <header class="topbar">${logo(true)}<div><button class="top-ghost" data-action="teacher" data-id="${module.id}">교사용 수업안</button><button class="top-home" data-action="home">전체 학습관</button></div></header>
+      <header class="topbar">${logo(true)}<button class="top-home" data-action="home">전체 학습관</button></header>
       <section class="lobby-hero"><span class="big-icon">${module.icon}</span><div><small>${module.order}관 · ${module.eyebrow}</small><h1>${module.title}</h1><p>${module.short}</p><div class="competency-chips large">${module.competencies.map(c => `<span>${c}</span>`).join('')}</div></div></section>
       <section class="scenario-section"><div class="section-heading"><div><span>SCENE SELECT</span><h2>연습할 장면을 골라요</h2><p>실제 경험을 말하지 않아도 괜찮아요. 이야기 속 인물의 선택을 함께 살펴봅니다.</p></div><button class="back-link" data-action="home">← 다른 학습관 보기</button></div>
         <div class="scenario-grid">${module.scenarios.map(s => scenarioCard(module, s)).join('')}</div>
       </section>
       <footer class="site-footer compact-footer"><p><b>안전 원칙</b> 위험하거나 반복되는 상황에서는 직접 맞서기보다 안전한 곳과 믿을 수 있는 어른을 찾아요.</p>${credit()}</footer>
-      ${teacherModal()}
     </main>`
   }
 
@@ -116,7 +114,7 @@
     return `<main class="practice-shell" style="--module:${module.color};--pale:${module.pale}">
       <header class="topbar practice-top">${logo(true)}${stepProgress(module)}<button class="top-home" data-action="back-module">장면 선택</button></header>
       <div class="practice-layout"><div class="practice-main">${sceneStage(module, scenario)}${body}</div>${coachPanel(module, scenario)}</div>
-      ${outcomeModal(module, scenario)}${teacherModal()}
+      ${outcomeModal(module, scenario)}
     </main>`
   }
 
@@ -198,7 +196,6 @@
     return `<aside class="coach-panel"><div class="coach-top"><span>${module.icon}</span><small>${module.competencies.join(' · ')}</small><h3>${module.title} 코치</h3><p>${scenario.lesson}</p></div>
       <div class="flow-card"><b>오늘의 안전 흐름</b>${flow.map((item,index) => `<div><span>${index + 1}</span><p>${item}</p></div>`).join('')}</div>
       <div class="safety-card"><b>🛟 꼭 기억해요</b><p>무섭거나 반복되는 행동, 강요, 여러 명의 괴롭힘, 온라인 확산은 혼자 해결하지 않아도 돼요.</p></div>
-      <button class="teacher-aside" data-action="teacher" data-id="${module.id}">교사용 발문 보기</button>
     </aside>`
   }
 
@@ -219,7 +216,7 @@
   function result () {
     const module = getModule(); const scenario = getScenario()
     return `<main class="result-shell" style="--module:${module.color};--pale:${module.pale}">
-      <header class="topbar">${logo(true)}<div><button class="top-ghost" data-action="print">인증 장면 인쇄</button><button class="top-home" data-action="back-module">다른 장면</button></div></header>
+      <header class="topbar">${logo(true)}<div><button class="top-ghost" data-action="print">나의 약속 인쇄</button><button class="top-home" data-action="back-module">다른 장면</button></div></header>
       <section class="result-paper"><div class="result-heading"><span>${module.icon} ${module.title} · DIRECTOR'S CUT</span><h1>관계와 안전의 결말을 바꿨어요!</h1><p>${scenario.lesson}</p></div>
         <div class="compare-scenes"><article><span>처음 장면</span><img src="${scenario.before}" alt="처음 ${esc(scenario.title)} 장면"><div>${scenario.lines.map(line => `<p>“${line[1]}”</p>`).join('')}</div></article><div class="result-arrow"><b>🎬</b><span>다시<br>연출하기</span><i>→</i></div><article class="safe-result"><span>안전한 결말</span><img src="${scenario.after}" alt="안전하게 바뀐 ${esc(scenario.title)} 결말"><div><p>“${scenario.safeLine}”</p></div></article></div>
         <div class="earned-badges">${module.competencies.map((item,index) => `<article><span>${['💛','🛟','🤝'][index]}</span><div><small>어울림 역량</small><b>${item}</b></div></article>`).join('')}<article><span>🦸</span><div><small>안전한 선택</small><b>도움을 연결했어요</b></div></article></div>
@@ -230,44 +227,19 @@
     </main>`
   }
 
-  function teacherModal () {
-    if (!state.teacherId) return ''
-    if (state.teacherId === 'overview') {
-      return `<div class="teacher-backdrop" data-action="close-teacher"><section class="teacher-modal" role="dialog" aria-modal="true"><button class="modal-x" data-action="close-teacher">×</button><span class="teacher-chip">교사용 수업 설계</span><h2>어울림 관계안전 스튜디오</h2><p>네 학습관을 한 번에 몰아서 하기보다 학급 상황에 맞춰 정기적으로 한 장면씩 운영하세요.</p>
-        <div class="teacher-overview">${DATA.modules.map(m => `<article style="--module:${m.color}"><span>${m.icon}</span><b>${m.title}</b><small>${m.competencies.join(' · ')}</small></article>`).join('')}</div>
-        ${lessonFlow()}<div class="teacher-warning"><b>수업 안전 원칙</b><p>학생에게 실제 피해 경험 공개를 요구하지 않습니다. 반복·위협·강요·온라인 확산이 언급되면 학생끼리 화해시키기보다 안전 확보와 학교의 공식 지원 절차를 우선합니다.</p></div>
-      </section></div>`
-    }
-    const module = getModule(state.teacherId)
-    return `<div class="teacher-backdrop" data-action="close-teacher"><section class="teacher-modal" role="dialog" aria-modal="true"><button class="modal-x" data-action="close-teacher">×</button><span class="teacher-chip">${module.icon} ${module.title} · 교사용</span><h2>40분 수업안과 발문</h2><p>${module.teacher.goal}</p>
-      ${lessonFlow()}
-      <div class="question-box"><b>함께 나눌 질문</b>${module.teacher.questions.map((q,i) => `<p><span>${i + 1}</span>${q}</p>`).join('')}</div>
-      <div class="teacher-warning"><b>지도 유의점</b><p>${module.teacher.caution}</p></div>
-      <div class="observe-box"><b>관찰 포인트</b><span>감정을 근거와 함께 말하는가?</span><span>선택이 상대와 안전에 미치는 영향을 설명하는가?</span><span>도움을 요청하는 행동을 긍정적으로 인식하는가?</span></div>
-    </section></div>`
-  }
-  function lessonFlow () {
-    return `<div class="lesson-flow"><article><b>5분</b><span>장면 예상</span><small>표정·상황 관찰</small></article><article><b>10분</b><span>신호 찾기</span><small>개인 선택 후 짝 대화</small></article><article><b>15분</b><span>결과 비교</span><small>선택의 영향 말하기</small></article><article><b>7분</b><span>대사 연습</span><small>안전한 문장 바꾸기</small></article><article><b>3분</b><span>생활 연결</span><small>도움 받을 어른 떠올리기</small></article></div>`
-  }
-
   function render () {
     app.innerHTML = state.screen === 'home' ? home() : state.screen === 'module' ? moduleLobby() : state.screen === 'practice' ? practice() : result()
-    document.body.classList.toggle('modal-open', Boolean(state.outcomeOpen || state.teacherId))
+    document.body.classList.toggle('modal-open', Boolean(state.outcomeOpen))
   }
 
   app.addEventListener('click', event => {
     const target = event.target.closest('[data-action]')
     if (!target) return
     const action = target.dataset.action; const id = target.dataset.id
-    if (action === 'home') return set({ screen:'home', moduleId:null, scenarioId:null, step:1, outcomeOpen:false, teacherId:null })
-    if (action === 'open-module') return set({ screen:'module', moduleId:id, scenarioId:null, teacherId:null })
+    if (action === 'home') return set({ screen:'home', moduleId:null, scenarioId:null, step:1, outcomeOpen:false })
+    if (action === 'open-module') return set({ screen:'module', moduleId:id, scenarioId:null })
     if (action === 'scenario') return set({ screen:'practice', scenarioId:id, step:1, emotions:[], choice:null, insight:null, action:null, outcomeOpen:false })
-    if (action === 'back-module') return set({ screen:'module', step:1, outcomeOpen:false, teacherId:null })
-    if (action === 'teacher') return set({ teacherId:id })
-    if (action === 'close-teacher') {
-      if (event.target === target || target.classList.contains('modal-x')) return set({ teacherId:null })
-      return
-    }
+    if (action === 'back-module') return set({ screen:'module', step:1, outcomeOpen:false })
     if (action === 'emotion') {
       const values = state.emotions.includes(id) ? state.emotions.filter(item => item !== id) : state.emotions.concat(id)
       return set({ emotions:values })
@@ -292,7 +264,6 @@
 
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape' && state.outcomeOpen) set({ outcomeOpen:false })
-    else if (event.key === 'Escape' && state.teacherId) set({ teacherId:null })
   })
 
   render()

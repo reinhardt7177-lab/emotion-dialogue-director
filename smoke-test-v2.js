@@ -49,10 +49,14 @@ function expectNoText (text, stage) {
 
 expectText('어울림 관계안전 스튜디오', '첫 화면')
 expectText('관계 신호 탐정', '첫 화면')
+expectText('마음과 안전 연습', '학생 전용 첫 화면')
+expectNoText('교사용', '학생 전용 첫 화면')
 click('open-module', 'signals')
 expectText('도움이 필요한 신호를 찾아요', '학습관')
+expectNoText('교사용', '학생 전용 학습관')
 click('scenario', 'repeat-tease')
 expectText('그림을 계속 놀려요', '장면 시작')
+expectNoText('교사용', '학생 전용 학습 화면')
 click('emotion', '반복됨')
 click('emotion', '여럿이 한 명을 향함')
 expectText('대처 방법 살펴보기', '감정 선택 단계')
@@ -84,6 +88,7 @@ expectText('이제 연습할 한마디', '안전한 행동 뒤 연습 문장 공
 click('finish')
 expectText('관계와 안전의 결말을 바꿨어요!', '결과 화면')
 expectText('나의 관계안전 약속', '결과 화면')
+expectText('나의 약속 인쇄', '학생 전용 결과 화면')
 
 const data = global.window.RELATIONSHIP_STUDIO_DATA
 const scenarioCount = data.modules.reduce((sum, module) => sum + module.scenarios.length, 0)
