@@ -8,7 +8,7 @@ const storage = new Map()
 let appHtml = ''
 let clickHandler = null
 
-global.window = {}
+global.window = { location: { hostname: '' } }
 global.localStorage = {
   getItem: key => storage.get(key) || null,
   setItem: (key, value) => storage.set(key, value)
@@ -51,6 +51,12 @@ expectText('어울림 관계안전 스튜디오', '첫 화면')
 expectText('관계 신호 탐정', '첫 화면')
 expectText('마음과 안전 연습', '학생 전용 첫 화면')
 expectNoText('교사용', '학생 전용 첫 화면')
+expectText('assets/classroom-bg.webp', '로컬 배경 이미지 경로')
+global.window.location.hostname = 'emotion-dialogue-director.vercel.app'
+click('home')
+expectText('https://raw.githubusercontent.com/reinhardt7177-lab/emotion-dialogue-director/main/assets/classroom-bg.webp', '배포 배경 이미지 경로')
+global.window.location.hostname = ''
+click('home')
 click('open-module', 'signals')
 expectText('도움이 필요한 신호를 찾아요', '학습관')
 expectNoText('교사용', '학생 전용 학습관')

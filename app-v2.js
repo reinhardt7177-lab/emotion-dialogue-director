@@ -4,6 +4,7 @@
   const app = document.getElementById('app')
   const DATA = window.RELATIONSHIP_STUDIO_DATA
   const STORAGE_KEY = 'relationship-safety-studio-v2'
+  const REMOTE_ASSET_BASE = 'https://raw.githubusercontent.com/reinhardt7177-lab/emotion-dialogue-director/main/'
 
   const fresh = () => ({
     screen: 'home', moduleId: null, scenarioId: null, step: 1,
@@ -30,6 +31,10 @@
     node.textContent = value == null ? '' : String(value)
     return node.innerHTML
   }
+  function assetUrl (path) {
+    const hostname = window.location && window.location.hostname ? window.location.hostname : ''
+    return hostname.endsWith('vercel.app') ? `${REMOTE_ASSET_BASE}${path}` : path
+  }
   function choiceObjects (items) {
     return items.map(([id, icon, title, line, outcome]) => ({ id, icon, title, line, outcome, best: id === 'safe' }))
   }
@@ -48,7 +53,7 @@
   function home () {
     const total = DATA.modules.reduce((sum, module) => sum + module.scenarios.length, 0)
     const done = state.completed.length
-    return `<main class="home-shell">
+    return `<main class="home-shell" style="--hero-bg:url('${assetUrl('assets/classroom-bg.webp')}')">
       <section class="home-hero">
         <div class="hero-shade"></div>
         <header>${logo()}<div class="hero-actions"><span class="target-chip">초등 3~6학년 · 마음과 안전 연습</span></div></header>
@@ -77,7 +82,7 @@
 
   function moduleCard (module) {
     const completed = module.scenarios.filter(s => state.completed.includes(`${module.id}:${s.id}`)).length
-    const thumbs = module.scenarios.slice(0, 3).map((s, index) => `<img src="${s.before}" alt="" style="--n:${index}">`).join('')
+    const thumbs = module.scenarios.slice(0, 3).map((s, index) => `<img src="${assetUrl(s.before)}" alt="" style="--n:${index}">`).join('')
     return `<article class="module-card" style="--module:${module.color};--pale:${module.pale}">
       <div class="module-mosaic">${thumbs}<span>${module.order}관</span></div>
       <div class="module-card-body"><div class="module-icon">${module.icon}</div><span>${module.eyebrow}</span><h3>${module.title}</h3><p>${module.short}</p>
@@ -103,7 +108,7 @@
   function scenarioCard (module, scenario) {
     const done = state.completed.includes(`${module.id}:${scenario.id}`)
     return `<button class="scenario-card" data-action="scenario" data-id="${scenario.id}">
-      <span class="scenario-image"><img src="${scenario.before}" alt="${esc(scenario.title)} 장면"><em>${scenario.grade}학년 추천</em>${done ? '<i>✓ 완료</i>' : ''}</span>
+      <span class="scenario-image"><img src="${assetUrl(scenario.before)}" alt="${esc(scenario.title)} 장면"><em>${scenario.grade}학년 추천</em>${done ? '<i>✓ 완료</i>' : ''}</span>
       <span class="scenario-copy"><small>${scenario.place}</small><b>${scenario.icon} ${scenario.title}</b><p>${scenario.summary}</p><strong>${done ? '다시 연습하기' : '장면 시작하기'} →</strong></span>
     </button>`
   }
@@ -127,7 +132,7 @@
   }
 
   function sceneStage (module, scenario) {
-    return `<section class="scene-stage"><img src="${scenario.before}" alt="${esc(scenario.title)} 상황 장면"><div class="stage-gradient"></div><span class="scene-label">SCENE · ${scenario.place}</span>
+    return `<section class="scene-stage"><img src="${assetUrl(scenario.before)}" alt="${esc(scenario.title)} 상황 장면"><div class="stage-gradient"></div><span class="scene-label">SCENE · ${scenario.place}</span>
       <div class="stage-caption"><small>${scenario.grade}학년 추천</small><h1>${scenario.icon} ${scenario.title}</h1><p>${scenario.summary}</p></div>
       <div class="dialogue-stack">${scenario.lines.map(([name,line]) => `<article><small>${name}</small><b>“${line}”</b></article>`).join('')}</div>
     </section>`
@@ -206,7 +211,7 @@
     const memoryTags = item.best ? ['잠깐 멈춤', '마음 존중', '도움 연결'] : ['결과 살피기', '마음 확인', '다시 선택']
     const memoryLine = item.best ? scenario.safeLine : '잠깐 멈추고, 이 선택 뒤에 남는 마음과 문제를 다시 살펴봐요.'
     return `<div class="modal-backdrop" data-action="close-outcome" role="presentation"><section class="outcome-modal ${item.id}" role="dialog" aria-modal="true" aria-label="선택 결과"><button class="modal-x" data-action="close-outcome" aria-label="닫기">×</button>
-      <div class="outcome-art"><img src="${image}" alt="${esc(item.title)}의 결과 장면"><span>${item.best ? '안전한 결과' : '다시 생각할 결과'}</span><b>표정 · 몸의 거리 · 주변 도움을 그림에서 찾아보세요</b></div>
+      <div class="outcome-art"><img src="${assetUrl(image)}" alt="${esc(item.title)}의 결과 장면"><span>${item.best ? '안전한 결과' : '다시 생각할 결과'}</span><b>표정 · 몸의 거리 · 주변 도움을 그림에서 찾아보세요</b></div>
       <div class="outcome-copy"><small>${item.icon} ${item.title}</small><h2>${item.outcome}</h2><p>${item.best ? '마음을 존중하면서 안전한 도움과 해결의 길을 열었어요.' : '이 선택 뒤에는 어떤 마음과 문제가 남는지 살펴보세요. 다시 선택해도 괜찮아요.'}</p>
         <div class="memory-block"><small>🧠 머리에 쏙! 기억 문장</small><strong>“${memoryLine}”</strong><div>${memoryTags.map(tag => `<span>${tag}</span>`).join('')}</div></div>
         <button data-action="close-outcome">다른 선택도 살펴보기</button></div>
@@ -218,7 +223,7 @@
     return `<main class="result-shell" style="--module:${module.color};--pale:${module.pale}">
       <header class="topbar">${logo(true)}<div><button class="top-ghost" data-action="print">나의 약속 인쇄</button><button class="top-home" data-action="back-module">다른 장면</button></div></header>
       <section class="result-paper"><div class="result-heading"><span>${module.icon} ${module.title} · DIRECTOR'S CUT</span><h1>관계와 안전의 결말을 바꿨어요!</h1><p>${scenario.lesson}</p></div>
-        <div class="compare-scenes"><article><span>처음 장면</span><img src="${scenario.before}" alt="처음 ${esc(scenario.title)} 장면"><div>${scenario.lines.map(line => `<p>“${line[1]}”</p>`).join('')}</div></article><div class="result-arrow"><b>🎬</b><span>다시<br>연출하기</span><i>→</i></div><article class="safe-result"><span>안전한 결말</span><img src="${scenario.after}" alt="안전하게 바뀐 ${esc(scenario.title)} 결말"><div><p>“${scenario.safeLine}”</p></div></article></div>
+        <div class="compare-scenes"><article><span>처음 장면</span><img src="${assetUrl(scenario.before)}" alt="처음 ${esc(scenario.title)} 장면"><div>${scenario.lines.map(line => `<p>“${line[1]}”</p>`).join('')}</div></article><div class="result-arrow"><b>🎬</b><span>다시<br>연출하기</span><i>→</i></div><article class="safe-result"><span>안전한 결말</span><img src="${assetUrl(scenario.after)}" alt="안전하게 바뀐 ${esc(scenario.title)} 결말"><div><p>“${scenario.safeLine}”</p></div></article></div>
         <div class="earned-badges">${module.competencies.map((item,index) => `<article><span>${['💛','🛟','🤝'][index]}</span><div><small>어울림 역량</small><b>${item}</b></div></article>`).join('')}<article><span>🦸</span><div><small>안전한 선택</small><b>도움을 연결했어요</b></div></article></div>
         <div class="promise-card"><span>${module.icon}</span><div><small>나의 관계안전 약속</small><p>감정을 알아차리고, 상대를 존중하며, 혼자 해결하기 어려운 상황에서는 <b>믿을 수 있는 어른과 함께 안전한 도움을 찾겠습니다.</b></p><i></i><em>어울림 관계안전 감독관 서명</em></div></div>
         <div class="result-buttons"><button data-action="home">4개 학습관으로</button><button class="primary" data-action="back-module">${module.title} 다른 장면 →</button></div>
